@@ -1,0 +1,63 @@
+﻿@using SAPrueba.Resources
+@using NonFactors.Mvc.Grid
+@model SAPrueba.Areas.Torneo.Models.Puntuaciones.PuntuacionIndexVM
+
+
+@{
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<style>
+    td {
+        max-width: 150px;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+      }
+
+    .table-hover tbody tr:hover {
+        background-color: rgba(0, 0, 0, 0.04);
+    }
+</style>
+
+
+@section Scripts{
+    <script src="~/js/puntuacion.js"></script>
+}
+
+@{
+    ViewData["Title"] = "Puntuaciones";
+        
+    <div class="container d-flex flex-column">
+        <div class="row">
+            
+            <div class="col mt-auto d-md-flex justify-content-md-end pe-0">
+            </div>
+        </div>
+    </div>
+        
+    <div id="ListaPuntuaciones" class="col-xs-12 mt-4">
+        @(Html
+            .Grid(Model.Puntuaciones!)
+            .Id("gridPuntuaciones")
+            .Build(columns =>
+            {
+                columns.Add(model => model.Nombre);
+                columns.Add(model => model.PtoPartida);
+                columns.Add(model => model.PtoConseguido);
+                columns.Add(model => model.PtoCedido);
+                columns.Add(model => model.DiferenciaPto);
+                columns.Add(model => model.LiderAbatido);
+                columns.Add(model => "<button class='btnEditar btn btn-secondary btn-sm fa-solid fa-pencil ms-1' data-id=\""+ model.Nombre + "\">"+
+                                     "<button class='btnEliminar btn btn-secondary btn-sm fa-solid fa-trash ms-1' data-id=\""+ model.Nombre + "\">" )
+                                       .Encoded(false).Css("text-center");
+            })
+            .Empty("No data found")
+            .Sortable()
+            .Css("css-classes") // Overwrites all classes with the new ones
+            .AppendCss("table-hover") // Appends classes to the current ones
+        )
+    </div>
+
+    
+}

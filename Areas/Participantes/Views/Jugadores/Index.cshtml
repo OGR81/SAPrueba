@@ -1,0 +1,112 @@
+﻿@using SAPrueba.Resources
+@using NonFactors.Mvc.Grid
+@model SAPrueba.Areas.Participantes.Models.Jugadores.JugadorIndexVM
+
+
+@{
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<style>
+    td {
+        max-width: 150px;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+      }
+
+    .table-hover tbody tr:hover {
+        background-color: rgba(0, 0, 0, 0.04);
+    }
+</style>
+
+
+@section Scripts{
+    <script src="~/js/jugador.js"></script>
+}
+
+@{
+    ViewData["Title"] = "Jugadores";
+        
+    <div class="container d-flex flex-column">
+        <div class="row">
+            
+            <div class="col mt-auto d-md-flex justify-content-md-end pe-0">
+                <button type="button" id="btnNuevo" class="btn btn-primary" onclick="nuevoJugador()"><i class="fa-solid fa-plus"></i> Nuevo</button>
+            </div>
+        </div>
+    </div>
+        
+    <div id="ListaJugadores" class="col-xs-12 mt-4">
+        @(Html
+            .Grid(Model.Jugadores!)
+            .Id("gridJugadores")
+            .Build(columns =>
+            {
+                columns.Add(model => model.Nombre);
+                columns.Add(model => model.Nick);
+                columns.Add(model => model.Bando);
+                columns.Add(model => model.PagoAbonado);
+                columns.Add(model => model.ListaEnviada);
+                columns.Add(model => "<button class='btnEditar btn btn-secondary btn-sm fa-solid fa-pencil ms-1' data-id=\""+model.Nombre + "\">"+
+                                     "<button class='btnEliminar btn btn-secondary btn-sm fa-solid fa-trash ms-1' data-id=\""+model.Nombre + "\">" )
+                                       .Encoded(false).Css("text-center");
+            })
+            .Empty("No data found")
+            .Sortable()
+            .Css("css-classes") // Overwrites all classes with the new ones
+            .AppendCss("table-hover") // Appends classes to the current ones
+        )
+    </div>
+
+    <!-- Modal -->
+    <div class="modal fade" id="modalNuevoJugador" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
+      <div class="modal-dialog">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h5 class="modal-title" id="staticBackdropLabel">@JugadorStrings.AnadirJugador</h5>
+            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+          </div>
+          @Html.AntiForgeryToken()
+          <form id="form_faq" class="needs-validation" novalidate method="post">
+              <div class="modal-body">
+              @Html.HiddenFor(m=>m.JugadorVM.NombreJugador)
+                    <div class="row">
+                        <div>
+                            @Html.LabelFor(m => m.JugadorVM.Nombre, null, new { @class="col-form-label"})
+                            @Html.EditorFor(m => m.JugadorVM.Nombre,  new {htmlAttributes = new {@class="form-control modal-control"}})
+                        </div>
+                        @Html.ValidationMessageFor(m => m.JugadorVM.Nombre, null, new {@class="text-danger"})
+                        <div class="col-lg-3">
+                            @Html.LabelFor(m => m.JugadorVM.Nick, null, new { @class="col-form-label"})
+                            @*@Html.EditorFor(m => m.JugadorVM.Nick,  new {htmlAttributes = new {@class="form-control modal-control"}})*@
+                            @Html.EditorFor(model => model.JugadorVM.Nick, new { htmlAttributes = new { @class="form-control modal-control", @type = "number", @min = "1", @step = "1", @value = "1" }})
+                        </div>
+                        @Html.ValidationMessageFor(m => m.JugadorVM.Nick, null, new {@class="text-danger"})
+                        <div>
+                            @Html.LabelFor(m => m.JugadorVM.Bando, null, new { @class="col-form-label"})
+                            @Html.TextAreaFor(m => m.JugadorVM.Bando,  new {@class="form-control modal-control", @style="height:200px"})
+                        </div>
+                        @Html.ValidationMessageFor(m => m.JugadorVM.Bando, null, new {@class="text-danger"})
+                        <div>
+                            @Html.LabelFor(m => m.JugadorVM.PagoAbonado, null, new { @class="col-form-label"})
+                            @Html.EditorFor(m => m.JugadorVM.PagoAbonado,  new {htmlAttributes = new {@class="form-control modal-control"}})
+                        </div>
+                        @Html.ValidationMessageFor(m => m.JugadorVM.PagoAbonado, null, new {@class="text-danger"})
+                        <div>
+                            @Html.LabelFor(m => m.JugadorVM.ListaEnviada, null, new { @class="col-form-label"})
+                            @Html.EditorFor(m => m.JugadorVM.ListaEnviada,  new {htmlAttributes = new {@class="form-control modal-control"}})
+                        </div>
+                        @Html.ValidationMessageFor(m => m.JugadorVM.ListaEnviada, null, new {@class="text-danger"})
+
+                    </div>
+              </div>
+              <div class="modal-footer">
+                <button id="btnGuardar" type="submit" class="btn btn-primary" onclick="guardarJugador()">@JugadorStrings.Guardar</button>
+                <button id="btnCerrar" class="btn btn-primary" data-bs-dismiss="modal" hidden>@JugadorStrings.Cerrar</button>
+              </div>
+          </form>
+        </div>
+      </div>
+    </div>
+}

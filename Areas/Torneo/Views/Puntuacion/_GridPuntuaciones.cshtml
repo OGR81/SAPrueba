@@ -1,0 +1,26 @@
+﻿@model List<SAPrueba.Areas.Torneo.Models.Puntuaciones.PuntuacionGridVM>
+@using NonFactors.Mvc.Grid
+
+@{
+    @(Html
+            .Grid(Model)
+            .Id("gridPuntuaciones")
+            .Build(columns =>
+            {
+                columns.Add(model => model.Nombre);
+                columns.Add(model => model.PtoPartida);
+                columns.Add(model => model.PtoConseguido);
+                columns.Add(model => model.PtoCedido);
+                columns.Add(model => model.DiferenciaPto);
+                columns.Add(model => model.LiderAbatido);
+                columns.Add(model => "<button class='btnRemove btn btn-primary btn-sm fa-solid fa-trash' data-nombre=\"" + model.Nombre + "\">"+
+                                     "<button class='btnEditar btn btn-secondary btn-sm fa-solid fa-pencil ms-1' data-id=\"" + model.Nombre + "\">" )
+                                     .Encoded(false).Css("text-center");
+            })
+            
+            .Empty("No data found")
+            .Sortable()
+            .Css("css-classes") // Overwrites all classes with the new ones
+            .AppendCss("table-hover") // Appends classes to the current ones
+        )
+}
